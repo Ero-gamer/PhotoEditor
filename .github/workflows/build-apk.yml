@@ -32,22 +32,24 @@ jobs:
             --no-daemon \
             -x test \
             -PossrhUsernameV2=placeholder \
-            -PossrhPasswordV2=placeholder \
-            -v 2>&1 | tee build.log
+            -PossrhPasswordV2=placeholder
       
-      - name: Show Build Output
+      - name: Find APK Location
         if: always()
         run: |
-          echo "=== FULL BUILD LOG ==="
-          cat build.log
+          echo "=== Searching for APK files ==="
+          find . -name "*.apk" -type f
           echo ""
-          echo "=== APK CHECK ==="
-          find . -name "*.apk" -type f 2>/dev/null | head -20
+          echo "=== App build outputs structure ==="
+          ls -R app/build/outputs/ 2>/dev/null || echo "outputs directory not found"
+          echo ""
+          echo "=== Full app/build structure ==="
+          find app/build -type d -name apk 2>/dev/null
       
       - name: Upload APK Artifact
         if: success()
         uses: actions/upload-artifact@v4
         with:
           name: PhotoEditor-unsigned-apk
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: app/build/outputs/apk/debug/*.apk
           retention-days: 30
