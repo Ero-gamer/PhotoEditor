@@ -15,10 +15,10 @@ jobs:
     
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@v4
       
       - name: Setup JDK 11
-        uses: actions/setup-java@v4.2.1
+        uses: actions/setup-java@v4
         with:
           java-version: '11'
           distribution: 'temurin'
@@ -27,22 +27,26 @@ jobs:
       - name: Make Gradlew Executable
         run: chmod +x ./gradlew
       
-      - name: Build Unsigned APK
-        run: ./gradlew assembleDebug --stacktrace
+      - name: Build Debug APK
+        run: ./gradlew :app:assembleDebug --no-daemon --stacktrace
+      
+      - name: Check APK Output
+        run: ls -la app/build/outputs/apk/debug/
       
       - name: Upload APK Artifact
-        uses: actions/upload-artifact@v4.3.3
+        uses: actions/upload-artifact@v4
         if: success()
         with:
-          name: PhotoEditor-unsigned-apk
+          name: PhotoEditor-debug-apk
           path: app/build/outputs/apk/debug/app-debug.apk
           retention-days: 30
-          compression-level: 9
       
-      - name: Build Status
+      - name: Build Success
         if: success()
         run: echo "✅ APK built successfully!"
       
       - name: Build Failed
         if: failure()
-        run: echo "❌ Build failed - check logs for details"
+        run: |
+          echo "❌ Build failed"
+          find app/build -name "*.apk" 2>/dev/null || echo "No APK files found"
