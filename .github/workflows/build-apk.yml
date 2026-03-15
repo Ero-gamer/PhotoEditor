@@ -16,8 +16,6 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
       
       - name: Setup JDK 11
         uses: actions/setup-java@v4
@@ -29,30 +27,14 @@ jobs:
       - name: Make Gradlew Executable
         run: chmod +x ./gradlew
       
-      - name: Clean Previous Builds
-        run: ./gradlew clean
-      
-      - name: Build Photoeditor Library
-        run: ./gradlew :photoeditor:build -x test --no-daemon
-      
-      - name: Build App Debug APK
-        run: ./gradlew :app:assembleDebug -x test --no-daemon
-      
-      - name: List Build Outputs
-        if: always()
-        run: |
-          echo "=== Checking APK Output ==="
-          find app/build/outputs -name "*.apk" -type f 2>/dev/null || echo "No APK found"
-          echo ""
-          echo "=== Full app/build structure ==="
-          ls -R app/build/outputs/ 2>/dev/null || echo "outputs directory not found"
+      - name: Build App Debug APK (Skip Publishing Scripts)
+        run: ./gradlew :app:assembleDebug --no-daemon -x test -x publish
       
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: PhotoEditor-unsigned-apk
           path: app/build/outputs/apk/debug/app-debug.apk
-          if-no-files-found: warn
           retention-days: 30
       
       - name: Build Success ✅
