@@ -26,15 +26,18 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      # This step fixes the "AAR metadata" error by forcing the build to use SDK 36
-      # and ignoring the version check failures.
+      # This step physically changes the files to meet the new requirements
+      - name: Patch Build Files for SDK 36
+        run: |
+          echo "Updating SDK versions..."
+          find . -name "build.gradle" -exec sed -i 's/compileSdk 34/compileSdk 36/g' {} +
+          find . -name "build.gradle" -exec sed -i 's/targetSdk 34/targetSdk 36/g' {} +
+          
+          echo "Updating Android Gradle Plugin..."
+          find . -name "build.gradle" -exec sed -i 's/com.android.tools.build:gradle:8.5.1/com.android.tools.build:gradle:8.9.1/g' {} +
+
       - name: Build Debug APK
-        run: >
-          ./gradlew assembleDebug 
-          -Pandroid.useAndroidX=true 
-          -PcompileSdk=36 
-          -PtargetSdk=36
-        continue-on-error: false
+        run: ./gradlew assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
