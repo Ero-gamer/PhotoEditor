@@ -6,6 +6,7 @@ on:
   workflow_dispatch:
 
 env:
+  # Resolves the Node.js 20 deprecation warning for 2026
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
@@ -26,23 +27,20 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      # This creates a "Master Rule" that forces SDK 36 on every module
-      - name: Create Global Build Override
+      - name: Strip Maven Scripts & Force Dependencies
         run: |
+          echo "Removing Maven publishing references..."
+          # This deletes the lines that try to load the 'publish-mavencentral.gradle' script
+          find . -name "build.gradle" -exec sed -i '/publish-mavencentral/d' {} +
+          
+          echo "Forcing stable dependency versions..."
+          # This creates a global rule to stop libraries from auto-updating to SDK 36 versions
           cat <<EOF > init.gradle
           allprojects {
-              buildscript {
-                  dependencies {
-                      classpath 'com.android.tools.build:gradle:8.9.1'
-                  }
-              }
-              afterEvaluate { project ->
-                  if (project.hasProperty('android')) {
-                      android {
-                          compileSdk 36
-                          defaultConfig {
-                              targetSdk 36
-                          }
+              configurations.all {
+                  resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+                      if (details.requested.group == 'androidx.core') {
+                          details.useVersion '1.13.0'
                       }
                   }
               }
@@ -50,7 +48,7 @@ jobs:
           EOF
 
       - name: Build Debug APK
-        run: ./gradlew assembleDebug --init-script init.gradle -x :app:checkDebugAarMetadata
+        run: ./gradlew assembleDebug --init-script init.gradle -x :app:checkDebugAarMetadata --stacktrace
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
