@@ -38,7 +38,7 @@ dependencies {
     //implementation 'com.burhanrashid52:photoeditor:3.0.2'
     implementation project(':photoeditor')
 
-    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.7.1'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation "androidx.core:core-ktx:1.13.1"
