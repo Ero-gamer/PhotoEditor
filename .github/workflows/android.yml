@@ -46,7 +46,7 @@ jobs:
         run: ./gradlew assembleRelease --no-configuration-cache -x :app:checkReleaseAarMetadata
 
       - name: Upload Release APK
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: photo-editor-v9-release
           path: app/build/outputs/apk/release/*.apk
