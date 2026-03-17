@@ -7,6 +7,7 @@
 [![AwesomeAndroid](https://img.shields.io/badge/Awesome%20Android-%2397-red.svg)](https://android.libhunt.com/newsletter/97)
 [![AndroidWeekly](https://img.shields.io/badge/Android%20Weekly-%23312-blue.svg)](http://androidweekly.net/issues/issue-312)
 [![Mindorks](https://img.shields.io/badge/Mindorks%20Newsletter-%234-ff69b4.svg)](https://mindorks.com/newsletter/edition/4)
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/Ero-gamer/PhotoEditor?utm_source=oss&utm_medium=github&utm_campaign=Ero-gamer%2FPhotoEditor&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
 
 
 A Photo Editor library with simple, easy support for image editing using Paints, Text, Filters, Emoji and Sticker like stories.
